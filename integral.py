@@ -1,6 +1,68 @@
-##PACKAGES##
+#----------------------------------------------------------------------------------------#
+#
+# This script uses a solar interior model script holding the variation of P, T and Rho vs
+# Z to calculate the propagation of acoustic-gravitational waves in the solar interior at
+# different frequencies (2, 3, 3.5, 5 mHz) from the "Lower Turning Point (LTP)" (k_z = 0).
+# 
+# A 2.5mHz wave trajectory is also presented as an example.
+#
+#----------------------------------------------------------------------------------------#
+
+
+
+
+
+##PACKAGES, DIRECTORIES & CONTANTS##
 import sympy as sym
 import numpy as np
+import matplotlib.pyplot as plt
+model = 'model_jcd.dat'
+figdir = 'figures/'
+EPS = 0.000025
+G = 6.674*1e-8          # G in cgs
+RSUN = 696340           # Solar radius in km 
+MSUN = 1.98e33          # Solar mass in g
+GAMMA = 5./3            # Adiabatic index
+DELTAZ = 23.3           # Model provided has a delta z of 23.3
+DELTAX = 23.3           # We set the delta x equal to delta z
+FRECUENCIES = np.array([0.002, 0.003, 0.0035, 0.005])   # Frecuencies in Hz
+Z_LTP = 500             # Z value where we calculate the LTP
+
+
+
+
+
+##FITTING SOLAR MODEL##
+    # Importing
+data = np.loadtxt(model,skiprows=1)
+Z = data[:,0]
+P = data[:,1]
+Rho = data[:,2]
+T = data[:,3]
+cs = np.sqrt(GAMMA*P/Rho)
+r = (RSUN + Z)*1e5
+g = G*MSUN/r**2
+H = P/Rho*g
+wc = cs/(1*H)
+N = np.sqrt((g/H)*(GAMMA-2)/GAMMA)
+dN_dz = np.gradient(N)
+dcs_dz = np.gradient(cs)
+dwc_dz = np.gradient(wc)
+
+    # Fitting
+p_z = np.polyval(np.polyfit(Z,P,3),Z)
+rho_z = np.polyval(np.polyfit(Z,Rho,3),Z)
+T_z = np.polyval(np.polyfit(Z,T,3),Z)
+
+    # Plotting
+for i in [[p_z,P],[rho_z,Rho],[T_z,T]]:
+    plt.figure()
+    plt.plot(Z,i[0],label='fit')
+    plt.plot(Z,i[1],label='model')
+    plt.legend()
+    plt.show()
+
+
 
 
 
@@ -21,12 +83,6 @@ dkx = dkx_ds
 dkz = sym.lambdify([N,N_z,cs,kx,kz,wc,cs_z,wc_z],dkz_ds,'numpy')
 dx = sym.lambdify([cs,kx,N,kz,wc],dx_ds,'numpy')
 dz = sym.lambdify([cs,kz,kx,wc],dz_ds,'numpy')
-
-
-
-##INTEGRATING VIA RUNGE-KUTTA##
-    #dkx_ds
-
 
 
 

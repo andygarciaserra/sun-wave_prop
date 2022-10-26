@@ -16,12 +16,12 @@ plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
 
 
 ##IMPORT##
+
 data = np.loadtxt(filename,skiprows=1)
 Z = data[:,0]
 P = data[:,1]
 Rho = data[:,2]
 T = data[:,3]
-
 
 
 ##PLOTTING##
