@@ -22,7 +22,7 @@ EPS = 0.000025
 G = 6.674*1e-8          # G in cgs
 RSUN = 696340           # Solar radius in km 
 MSUN = 1.98e33          # Solar mass in g
-GAMMA = 5./3            # Adiabatic index
+GAMMA =5./3             # Adiabatic index
 DELTAZ = 23.3           # Model provided has a delta z of 23.3
 DELTAX = 23.3           # We set the delta x equal to delta z
 FRECUENCIES = np.array([0.002, 0.003, 0.0035, 0.005])   # Frecuencies in Hz
@@ -43,16 +43,16 @@ cs = np.sqrt(GAMMA*P/Rho)
 r = (RSUN + Z)*1e5
 g = G*MSUN/r**2
 H = P/Rho*g
-wc = cs/(1*H)
-N = np.sqrt((g/H)*(GAMMA-2)/GAMMA)
+wc = cs/(2*H)
+N = np.sqrt((g/H)*(GAMMA-1)/GAMMA)
 dN_dz = np.gradient(N)
 dcs_dz = np.gradient(cs)
 dwc_dz = np.gradient(wc)
 
     # Fitting
-p_z = np.polyval(np.polyfit(Z,P,3),Z)
-rho_z = np.polyval(np.polyfit(Z,Rho,3),Z)
-T_z = np.polyval(np.polyfit(Z,T,3),Z)
+p_z = np.polyval(np.polyfit(Z,P,4),Z)
+rho_z = np.polyval(np.polyfit(Z,Rho,4),Z)
+T_z = np.polyval(np.polyfit(Z,T,4),Z)
 
     # Plotting
 for i in [[p_z,P],[rho_z,Rho],[T_z,T]]:
@@ -84,6 +84,7 @@ dkz = sym.lambdify([N,N_z,cs,kx,kz,wc,cs_z,wc_z],dkz_ds,'numpy')
 dx = sym.lambdify([cs,kx,N,kz,wc],dx_ds,'numpy')
 dz = sym.lambdify([cs,kz,kx,wc],dz_ds,'numpy')
 
-
-
-
+def fFunction(t, x, z, kx, kz):
+    index = np.argmin(np.abs(z - zArray))
+    return np.array([dx, dz, dkx, dkz])
+    
