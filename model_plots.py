@@ -6,13 +6,13 @@ filename = 'model_jcd.dat'
 figdir = 'figures/'
 
 
+
 ##PLOT-FORMAT##
 plt.rc('font', size=20)          # controls default text sizes
 plt.rc('axes', titlesize=16)     # fontsize of the axes title
 plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
 plt.rc('xtick', labelsize=16)    # fontsize of the tick labels
 plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
-
 
 
 ##IMPORT##
