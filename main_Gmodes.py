@@ -192,116 +192,118 @@ for i in range(len(FRECUENCIES)):
 #     print(zArray[posi])
  
 
-# Numeric integration
-
-gradcs = np.gradient(cs, -DELTAZ)
-gradwc = np.gradient(wc, -DELTAZ)
-gradn = np.gradient(n, -DELTAZ)
-
-results1 = rk4(fFunction, [0, zArray[5], k_xArray[0], 0], 0, 2, 1000000)
-results2 = rk4(fFunction, [0, zArray[5], k_xArray[1], 0], 0, 2, 1000000)
-results3 = rk4(fFunction, [0, zArray[5], k_xArray[2], 0], 0, 2, 1000000)
-results4 = rk4(fFunction, [0, zArray[5], k_xArray[3], 0], 0, 2, 1000000)
-
-
+# # Numeric integration
+# 
+# gradcs = np.gradient(cs, -DELTAZ)
+# gradwc = np.gradient(wc, -DELTAZ)
+# gradn = np.gradient(n, -DELTAZ)
+# 
+# results1 = rk4(fFunction, [0, zArray[5], k_xArray[0], 0], 0, 2, 1000000)
+# results2 = rk4(fFunction, [0, zArray[5], k_xArray[1], 0], 0, 2, 1000000)
+# results3 = rk4(fFunction, [0, zArray[5], k_xArray[2], 0], 0, 2, 1000000)
+# results4 = rk4(fFunction, [0, zArray[5], k_xArray[3], 0], 0, 2, 1000000)
+# 
+# 
 # Calculating Z values for w=wc on each frequency:
 Z_c = np.array([])
 w0 = 2*np.pi*FRECUENCIES
 for i in range(len(FRECUENCIES)):
     pos = np.where(w0[i]<n)[0][-1]
     Z_c = np.append(Z_c,zArray[pos])
+print(FRECUENCIES)
 print(Z_c)
-
-# Plot formatting
-colors = pl.cm.inferno(np.linspace(0,1,7))
-plt.rc('font', size=20)          # controls default text sizes
-plt.rc('axes', titlesize=20)     # fontsize of the axes title
-plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
-plt.rc('xtick', labelsize=20)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=20)    # fontsize of the tick labels
-rcParams['axes.linewidth'] = 1.5
-
-fig, ax = plt.subplots()
-ax.tick_params(width=1.5)
-fig.set_figheight(10)
-fig.set_figwidth(20)
-ax.set_xlabel('x [km]')
-ax.set_ylabel('z [km]', rotation = 90)
-ax.yaxis.label.set_size(22)
-ax.xaxis.label.set_size(22)
-ax.set_xlim([0,40000])
-ax.plot(results4[0], results4[1], color=colors[3], ls=':', lw=2, label=r'$\nu$ = 3.5 [mHz]')
-ax.axhline(y=Z_c[3], color=colors[3], ls=':', lw=2)
-ax.plot(results3[0], results3[1], color=colors[2], ls='-.', lw=2, label=r'$\nu$ = 3 [mHz]')
-ax.axhline(y=Z_c[2], color=colors[2], ls='-.', lw=2)
-ax.plot(results2[0], results2[1], color=colors[1], ls='--', lw=2, label=r'$\nu$ = 2.5 [mHz]')
-ax.axhline(y=Z_c[1], color=colors[1], ls='--', lw=2)
-ax.plot(results1[0], results1[1], color=colors[0], lw=2.5, label=r'$\nu$ = 2 [mHz]')
-ax.axhline(y=Z_c[0], color=colors[0], lw=2)
-ax.axhline(y=zArray[5], color='grey', ls='--', lw=2 , label=r'$Z_{LTP}$')
-plt.legend(bbox_to_anchor=(1.35, 0.6), loc='center right')
-plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
-plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-fig.tight_layout()
-plt.savefig(FIGDIR+'freqs_sameZ_gmodes.png',dpi=150)
-plt.show()
-
-
-
-
-# Same freq different Z_ltp:
-
-gradcs = np.gradient(cs, -DELTAZ)
-gradwc = np.gradient(wc, -DELTAZ)
-gradn = np.gradient(n, -DELTAZ)
-
-w0 = 2*np.pi*FRECUENCIES
-equi = np.linspace(0,np.where(w0[1]<n)[0][-1],4,dtype='int')
-equi = np.linspace(0,20,4,dtype='int')
-
-k_xArray = np.array([])  # Units will be cm^-1
-for i in 0,1,2,3:
-    k_xArray = np.append(k_xArray, w0[1] / cs[equi[i]])
-
-results1 = rk4(fFunction, [0, zArray[equi[0]], k_xArray[0], 0], 0, 2, 10000)
-results2 = rk4(fFunction, [0, zArray[equi[1]], k_xArray[1], 0], 0, 2, 10000)
-results3 = rk4(fFunction, [0, zArray[equi[2]], k_xArray[2], 0], 0, 2, 10000)
-results4 = rk4(fFunction, [0, zArray[equi[3]], k_xArray[3], 0], 0, 2, 10000)
-
-
-
-# Plot formatting
-colors = pl.cm.inferno(np.linspace(0,1,7))
-plt.rc('font', size=20)          # controls default text sizes
-plt.rc('axes', titlesize=20)     # fontsize of the axes title
-plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
-plt.rc('xtick', labelsize=20)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=20)    # fontsize of the tick labels
-rcParams['axes.linewidth'] = 1.5
-
-fig, ax = plt.subplots()
-ax.tick_params(width=1.5)
-fig.set_figheight(10)
-fig.set_figwidth(20)
-ax.set_xlabel('x [km]')
-ax.set_ylabel('z [km]', rotation = 90)
-ax.yaxis.label.set_size(22)
-ax.xaxis.label.set_size(22)
-ax.set_xlim([0,40000])
-ax.plot(results4[0], results4[1], color=colors[3], ls=':', lw=2, label='Z= '+str(zArray[equi[3]])+' [Km]')
-ax.axhline(y=zArray[equi[3]], color=colors[3], ls=':', lw=2)
-ax.plot(results3[0], results3[1], color=colors[2], ls='-.', lw=2, label='Z= '+str(zArray[equi[2]])+' [Km]')
-ax.axhline(y=zArray[equi[2]], color=colors[2], ls='-.', lw=2)
-ax.plot(results2[0], results2[1], color=colors[1], ls='--', lw=2, label='Z= '+str(zArray[equi[1]])+' [Km]')
-ax.axhline(y=zArray[equi[1]], color=colors[1], ls='--', lw=2)
-ax.plot(results1[0], results1[1], color=colors[0], lw=2.5, label='Z= '+str(zArray[equi[0]])+' [Km]')
-ax.axhline(y=zArray[equi[0]], color=colors[0], lw=2)
-#ax.axhline(y=zArray[ZLTP], color='grey', ls='--', lw=2 , label=r'$Z_{LTP}$')
-plt.legend(bbox_to_anchor=(1.35, 0.6), loc='center right')
-plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
-plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-fig.tight_layout()
-plt.savefig(FIGDIR+'freq_diffZ_gmodes.png',dpi=150)
-plt.show()
-
+print(zArray[5])
+# 
+# # Plot formatting
+# colors = pl.cm.inferno(np.linspace(0,1,7))
+# plt.rc('font', size=20)          # controls default text sizes
+# plt.rc('axes', titlesize=20)     # fontsize of the axes title
+# plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
+# plt.rc('xtick', labelsize=20)    # fontsize of the tick labels
+# plt.rc('ytick', labelsize=20)    # fontsize of the tick labels
+# rcParams['axes.linewidth'] = 1.5
+# 
+# fig, ax = plt.subplots()
+# ax.tick_params(width=1.5)
+# fig.set_figheight(10)
+# fig.set_figwidth(20)
+# ax.set_xlabel('x [km]')
+# ax.set_ylabel('z [km]', rotation = 90)
+# ax.yaxis.label.set_size(22)
+# ax.xaxis.label.set_size(22)
+# ax.set_xlim([0,40000])
+# ax.plot(results4[0], results4[1], color=colors[3], ls=':', lw=2, label=r'$\nu$ = 3.5 [mHz]')
+# ax.axhline(y=np.min(results4[1]), color=colors[3], ls=':', lw=2)
+# ax.plot(results3[0], results3[1], color=colors[2], ls='-.', lw=2, label=r'$\nu$ = 3 [mHz]')
+# ax.axhline(y=np.min(results3[1]), color=colors[2], ls='-.', lw=2)
+# ax.plot(results2[0], results2[1], color=colors[1], ls='--', lw=2, label=r'$\nu$ = 2.5 [mHz]')
+# ax.axhline(y=np.min(results2[1]), color=colors[1], ls='--', lw=2)
+# ax.plot(results1[0], results1[1], color=colors[0], lw=2.5, label=r'$\nu$ = 2 [mHz]')
+# ax.axhline(y=np.min(results1[1]), color=colors[0], lw=2)
+# ax.axhline(y=zArray[5], color='grey', ls='--', lw=2 , label=r'$Z_{LTP}$')
+# plt.legend(bbox_to_anchor=(1.35, 0.6), loc='center right')
+# plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+# plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+# fig.tight_layout()
+# plt.savefig(FIGDIR+'freqs_sameZ_gmodes.png',dpi=150)
+# plt.show()
+# 
+# 
+# 
+# 
+# # Same freq different Z_ltp:
+# 
+# gradcs = np.gradient(cs, -DELTAZ)
+# gradwc = np.gradient(wc, -DELTAZ)
+# gradn = np.gradient(n, -DELTAZ)
+# 
+# w0 = 2*np.pi*FRECUENCIES
+# equi = np.linspace(0,np.where(w0[1]<n)[0][-1],4,dtype='int')
+# equi = np.linspace(0,20,4,dtype='int')
+# 
+# k_xArray = np.array([])  # Units will be cm^-1
+# for i in 0,1,2,3:
+#     k_xArray = np.append(k_xArray, w0[1] / cs[equi[i]])
+# 
+# results1 = rk4(fFunction, [0, zArray[equi[0]], k_xArray[0], 0], 0, 2, 10000)
+# results2 = rk4(fFunction, [0, zArray[equi[1]], k_xArray[1], 0], 0, 2, 10000)
+# results3 = rk4(fFunction, [0, zArray[equi[2]], k_xArray[2], 0], 0, 2, 10000)
+# results4 = rk4(fFunction, [0, zArray[equi[3]], k_xArray[3], 0], 0, 2, 10000)
+# 
+# 
+# 
+# # Plot formatting
+# colors = pl.cm.inferno(np.linspace(0,1,7))
+# plt.rc('font', size=20)          # controls default text sizes
+# plt.rc('axes', titlesize=20)     # fontsize of the axes title
+# plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
+# plt.rc('xtick', labelsize=20)    # fontsize of the tick labels
+# plt.rc('ytick', labelsize=20)    # fontsize of the tick labels
+# rcParams['axes.linewidth'] = 1.5
+# 
+# fig, ax = plt.subplots()
+# ax.tick_params(width=1.5)
+# fig.set_figheight(10)
+# fig.set_figwidth(20)
+# ax.set_xlabel('x [km]')
+# ax.set_ylabel('z [km]', rotation = 90)
+# ax.yaxis.label.set_size(22)
+# ax.xaxis.label.set_size(22)
+# ax.set_xlim([0,40000])
+# ax.plot(results4[0], results4[1], color=colors[3], ls=':', lw=2, label='Z= '+str(zArray[equi[3]])+' [Km]')
+# ax.axhline(y=zArray[equi[3]], color=colors[3], ls=':', lw=2)
+# ax.plot(results3[0], results3[1], color=colors[2], ls='-.', lw=2, label='Z= '+str(zArray[equi[2]])+' [Km]')
+# ax.axhline(y=zArray[equi[2]], color=colors[2], ls='-.', lw=2)
+# ax.plot(results2[0], results2[1], color=colors[1], ls='--', lw=2, label='Z= '+str(zArray[equi[1]])+' [Km]')
+# ax.axhline(y=zArray[equi[1]], color=colors[1], ls='--', lw=2)
+# ax.plot(results1[0], results1[1], color=colors[0], lw=2.5, label='Z= '+str(zArray[equi[0]])+' [Km]')
+# ax.axhline(y=zArray[equi[0]], color=colors[0], lw=2)
+# #ax.axhline(y=zArray[ZLTP], color='grey', ls='--', lw=2 , label=r'$Z_{LTP}$')
+# plt.legend(bbox_to_anchor=(1.35, 0.6), loc='center right')
+# plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+# plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+# fig.tight_layout()
+# plt.savefig(FIGDIR+'freq_diffZ_gmodes.png',dpi=150)
+# plt.show()
+# 
 
